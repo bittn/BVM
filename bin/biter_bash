@@ -1,0 +1,7 @@
+#!/bin/bash
+if ! [ -v BITTNDIR ]; then
+  echo -e "\e[1;31m Please set \$BITTNDIR \e[m"
+  exit 1
+fi
+
+BITTN_WORKSPACE="$(pwd)" bundle exec ruby "${BITTNDIR}/src/vm/main.rb" "$@"
