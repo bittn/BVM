@@ -20,26 +20,46 @@ module BVM
         case op
         when "push"
           @stack.push(line[1..].join(" "))
+          puts "pushed #{line[1..].join(" ")}" if @options[:debug]
+          puts "NOW STACK: #{@stack.get}" if @options[:debug]
         when "pop"
-          @stack.pop
+          popped = @stack.pop
+          puts "popped #{popped}" if @options[:debug]
+          puts "NOW STACK: #{@stack.get}" if @options[:debug]
         when "dup"
           popped = @stack.pop
           @stack.push(popped)
           @stack.push(popped)
+          puts "dup #{popped}" if @options[:debug]
+          puts "NOW STACK: #{@stack.get}" if @options[:debug]
         when "add"
           @stack.push(@stack.pop + @stack.pop)
+          puts "add" if @options[:debug]
+          puts "NOW STACK: #{@stack.get}" if @options[:debug]
         when "sub"
           @stack.push(@stack.pop - @stack.pop)
+          puts "sub" if @options[:debug]
+          puts "NOW STACK: #{@stack.get}" if @options[:debug]
         when "mul"
           @stack.push(@stack.pop * @stack.pop)
+          puts "mul" if @options[:debug]
+          puts "NOW STACK: #{@stack.get}" if @options[:debug]
         when "div"
           @stack.push(@stack.pop / @stack.pop)
+          puts "div" if @options[:debug]
+          puts "NOW STACK: #{@stack.get}" if @options[:debug]
         when "not"
           @stack.push(!@stack.pop)
+          puts "not" if @options[:debug]
+          puts "NOW STACK: #{@stack.get}" if @options[:debug]
         when "smaller"
           @stack.push(@stack.pop < @stack.pop)
+          puts "smaller" if @options[:debug]
+          puts "NOW STACK: #{@stack.get}" if @options[:debug]
         when "bigger"
           @stack.push(@stack.pop > @stack.pop)
+          puts "bigger" if @options[:debug]
+          puts "NOW STACK: #{@stack.get}" if @options[:debug]
         when "call"
           case @stack.pop
           when "1"
@@ -49,12 +69,14 @@ module BVM
           if @stack.pop
             value = line[2].split(":")[0]
             label = line[2].split(":")[1]
+            puts "goto #{label}" if @options[:debug]
             labels[label] = pc
             pc = value.to_i
           end
         when "ret"
           label = line[1].split(":")[0]
           value = line[1].split(":")[1]
+          puts "return #{label}" if @options[:debug]
           if label == "main"
             return value
           else
@@ -64,13 +86,12 @@ module BVM
         when "goto"
           value = line[1].split(":")[0]
           label = line[1].split(":")[1]
+          puts "goto #{label}" if @options[:debug]
           labels[label] = pc
           pc = value.to_i
         else
           p line
         end
-        puts "#{pc} stack" if @options[:debug]
-        p @stack.get if @options[:debug]
         pc += 1
       end
     end

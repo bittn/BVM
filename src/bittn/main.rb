@@ -5,7 +5,6 @@ require "#{ENV["BITTNDIR"]}/src/bittn/runner.rb"
 require "#{ENV["BITTNDIR"]}/src/bittn/transformer.rb"
 require "#{ENV["BITTNDIR"]}/src/bittn/bytecode_transformer.rb"
 
-
 module Bittn
   class Bittn
     def initialize()
@@ -18,9 +17,9 @@ module Bittn
     end
 
     def parse_option
-      $options = {debug: false}
+      $options = { debug: false }
       @parser_option = OptionParser.new
-      @parser_option.on("-d","--debug","run in debug mode") do
+      @parser_option.on("-d", "--debug", "run in debug mode") do
         $options[:debug] = true
       end
       @parser_option.program_name = "bittn"
@@ -38,9 +37,9 @@ module Bittn
       rescue OptionParser::InvalidOption => e
         usage e.message
       end
-      if @args[0]==nil
+      if @args[0] == nil
         raise LoadError, "Bikefile is not specified."
-      elsif @args[1]==nil
+      elsif @args[1] == nil
         raise LoadError, "Script is not specified."
       elsif @args.size > 2
         raise LoadError, "Number of arguments is too more."
@@ -77,32 +76,37 @@ module Bittn
     end
 
     def transform_script()
-      @transformer_script = Transformer.new(@lang,@bikefile)
+      @transformer_script = Transformer.new(@lang, @bikefile)
       @transformed_tree = @transformer_script.transform(@parsed_tree)
     end
 
     def run_script()
       @runner_script = Runner.new(@lang)
       @bytecode = @runner_script.run(@transformed_tree)
+      puts "BYTECODE:" if $options[:debug]
+      p @bytecode.get if $options[:debug]
     end
 
     def transform_bytecode()
       @transformer_bytecode = BVM::Transformer.new
       @transformed_bytecode = @transformer_bytecode.transform(@bytecode)
+      puts "TRANSFORMED BYTECODE:" if $options[:debug]
+      p @transformed_bytecode.get if $options[:debug]
     end
 
     def save_bytecode()
-      basename = File.basename(@bikefile.gsub("\/","\\"), ".*").gsub("\\","\/")
+      basename = File.basename(@bikefile.gsub("\/", "\\"), ".*").gsub("\\", "\/")
       File.write("#{basename}.biter", @transformed_bytecode.get.join("\n"))
       puts "successfully in #{basename}.biter"
     end
   end
 end
+
 begin
   if $0 == __FILE__
     Bittn::Bittn.new()
   end
-rescue Bittn::LoadError,TransformError => e
+rescue Bittn::LoadError, TransformError => e
   puts "#{e.message} (#{e.class})"
   puts $@ if $options[:debug]
   exit(1)
@@ -132,4 +136,3 @@ rescue => e
   end
   exit(1)
 end
-
