@@ -4,10 +4,12 @@ module Bittn
       @lang = lang
       @bytecode = ByteCode.new()
     end
+
     def run(tree)
       node = Marshal.load(tree[0])
       result = node.run(@bytecode)
-      if result==nil
+      Marshal.load(@lang.finish).new(nil).run(@bytecode)
+      if result == nil
         raise BittnError, "#{node.class.name} is unknown."
       end
       return @bytecode

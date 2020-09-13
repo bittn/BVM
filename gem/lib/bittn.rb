@@ -1,5 +1,5 @@
 require "bittn/version"
-require 'parslet'
+require "parslet"
 
 module Bittn
   class BaseParser < Parslet::Parser
@@ -9,7 +9,8 @@ module Bittn
   end
 
   class BaseLang
-    attr_reader :name,:version,:kinds,:obj,:type
+    attr_reader :name, :version, :kinds, :obj, :type, :finish
+
     def initialize
       @name = nil
       @version = nil
@@ -18,9 +19,11 @@ module Bittn
       @obj = nil
       @type = nil
     end
+
     def parser
       return Marshal.dump(@parser.new)
     end
+
     #def obj
     #  return @obj.map do |key,value|
     #    return [key,Marshal.dump(value)]
@@ -38,12 +41,15 @@ module Bittn
       @data = data
       @code = nil
     end
+
     def call()
       return nil
     end
+
     def exec()
       return nil
     end
+
     def run()
       return nil
     end
@@ -65,11 +71,13 @@ module Bittn
     def initialize()
       @codes = []
     end
+
     def add(line)
       line.split("\n").map do |p|
         @codes.push(p)
       end
     end
+
     def get()
       return @codes
     end
