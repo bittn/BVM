@@ -6,7 +6,7 @@ gem "bittn", :path => "./gem/"
 gem "parslet"
 gem "launchy"
 gem "highline"
-gem "rbconfig"
+gem "rake"
 
 group :development do
   gem "pry"
